@@ -10,7 +10,7 @@ public class GreeterServer {
             UnicastRemoteObject.exportObject(server, 0);
 
             // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry("192.168.1.254",1099); // Registry port
+            Registry registry = LocateRegistry.getRegistry("127.0.0.1",1099); // Registry port
             registry.rebind("Hello", (Hello) server);
             registry.rebind("Goodbye", (Goodbye) server);
 
