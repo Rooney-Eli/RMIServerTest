@@ -6,12 +6,13 @@ RUN apt-get update && \
     git \
     net-tools \
     && rm -rf /var/lib/apt/lists/*
+
 RUN git clone https://github.com/Rooney-Eli/RMIServerTest.git /tmp/repo
 
 RUN mkdir -p /app
 
 RUN cp /tmp/repo/src/*.java /app/
-
+# Debug output
 WORKDIR /app
 
 RUN javac -d . *.java

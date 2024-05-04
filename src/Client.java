@@ -5,7 +5,7 @@ public class Client {
     public static void main(String[] args) {
         try {
             // Get a reference to the RMI registry running on the server's host and port
-            Registry registry = LocateRegistry.getRegistry("localhost", 8081); // Server's host and port
+            Registry registry = LocateRegistry.getRegistry("localhost", 8080); // Server's host and port
 
             // Look up the remote object by name
             Hello helloStub = (Hello) registry.lookup("Hello");
