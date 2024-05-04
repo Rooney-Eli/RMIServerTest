@@ -1,16 +1,23 @@
 #!/bin/bash
 
-# Define the base port
-base_port=8080
 
-# Number of containers to run
+rmi_registry_port=1099
+
 num_containers=1
+
+network_name="awesome-network"
+
+docker network create $network_name
 
 docker build -t rmi-node .
 
-# Run containers
 for ((i=0; i<num_containers; i++)); do
-    port=$((base_port + i))
-    docker run -d -p $port:1099 --name rmi-node-$i rmi-node
-    echo "Container $i running on port $port"
+    # Stop the container if it is already running
+    docker stop rmi-server-node-$i >/dev/null 2>&1
+    # Remove the container if it exists
+    docker rm rmi-server-node-$i >/dev/null 2>&1
+
+    docker run -d -p $rmi_registry_port:$rmi_registry_port --name rmi-server-node-$i --network $network_name rmi-node
+    echo "rmi-server-node-$i running!"
 done
+

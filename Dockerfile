@@ -9,17 +9,15 @@ RUN apt-get update && \
 
 RUN git clone https://github.com/Rooney-Eli/RMIServerTest.git /tmp/repo
 
-RUN mkdir -p /app
+RUN mkdir -p /app/src
 
-RUN cp /tmp/repo/src/*.java /app/
-# Debug output
+RUN cp /tmp/repo/src/*.java /app/src/
+
 WORKDIR /app
 
-RUN javac -d . *.java
-
-COPY start-rmi.sh /app/start-rmi.sh
-RUN chmod +x /app/start-rmi.sh
+COPY  /tmp/repo/start-rmi.sh /app/start-rmi.sh
+RUN chmod +x /app/start-server.sh
 
 EXPOSE 1099
 
-CMD ["/app/start-rmi.sh"]
+CMD ["/app/start-server.sh"]
