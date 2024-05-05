@@ -1,4 +1,7 @@
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -12,10 +15,10 @@ public class ServerToServerConnectionHandler extends ServerConnectionHandler {
     Timer timer;
 
     public ServerToServerConnectionHandler(String myAddress, ArrayList<String> addresses, String registryName) {
+        setupSTSServer(registryName);
         this.serverToServerStubs = connectToServers(addresses, registryName, IServerToServer.class);
         setupForHeartbeats(this.serverToServerStubs);
         this.myAddress = myAddress;
-        setupNotificationServer();
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -68,6 +71,24 @@ public class ServerToServerConnectionHandler extends ServerConnectionHandler {
                     System.out.println("There was a problem invoking heartbeat for " + address);
                 }
             }
+        }
+    }
+
+    public void setupSTSServer(String registryName) {
+        ServerToServer notificationServer;
+        try {
+            notificationServer = new ServerToServer();
+            UnicastRemoteObject.exportObject(notificationServer, 0);
+        } catch (RemoteException e) {
+            System.err.println("There was a problem exporting remote notificationServer object!");
+            return;
+        }
+
+        try {
+            Registry registry = LocateRegistry.getRegistry("127.0.0.1",1099); // Local Registry for the Node
+            registry.rebind(registryName, notificationServer);
+        } catch (RemoteException e) {
+            System.err.println("There was a problem binding the server object in the registry: " + registryName);
         }
     }
 

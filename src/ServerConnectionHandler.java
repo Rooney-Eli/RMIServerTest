@@ -28,7 +28,7 @@ public class ServerConnectionHandler {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1",1099); // Local Registry for the Node
             registry.rebind("Notifications", notificationServer);
         } catch (RemoteException e) {
-            System.err.println("There was a problem binding the server object in the registry!");
+            System.err.println("There was a problem binding the server object in the registry: " + "Notifications");
         }
     }
 
@@ -48,7 +48,7 @@ public class ServerConnectionHandler {
                 T stub = stubClass.cast(registry.lookup(registryName));
                 stubs.put(address, stub);
             } catch (NotBoundException | RemoteException e) {
-                System.out.println("There was a binding stubs for address: " + address);
+                System.out.println("There was a problem binding stubs for address: " + address);
             }
         }
         return stubs;
