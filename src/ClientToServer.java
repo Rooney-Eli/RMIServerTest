@@ -8,7 +8,12 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
 public class ClientToServer implements IClientToServer {
-    HashMap<String, IServerToClient> subscriptions = new HashMap<>();
+
+    HashMap<String, IServerToClient> subscriptions;
+
+    public ClientToServer(HashMap<String, IServerToClient> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
 
     public void notifySubscribersNewNumber(int num) {
         for(String address: subscriptions.keySet()) {
@@ -20,6 +25,7 @@ public class ClientToServer implements IClientToServer {
         }
     }
 
+    @Override
     public void subscribeToServerNotifications(String address) throws RemoteException {
         Registry registry;
         try {
@@ -32,16 +38,25 @@ public class ClientToServer implements IClientToServer {
         try {
             IServerToClient serverToClientStub = (IServerToClient) registry.lookup("Notifications");
             subscriptions.put(address, serverToClientStub);
+            System.out.println("Subscribed client: " + address);
         } catch (NotBoundException | RemoteException e) {
             System.out.println("There was a binding stubs for address: " + address);
             return;
         }
     }
 
+    @Override
+    public void unsubscribeToServerNotifications(String address) throws RemoteException {
+        subscriptions.remove(address);
+        System.out.println("Unsubscribed client: " + address);
+    }
+
+    @Override
     public String sayHello(String name) throws RemoteException {
         return "Hello, from " + name + "!";
     }
 
+    @Override
     public String sayGoodbye() throws RemoteException {
         try {
             System.out.println("Saying goodbye.");

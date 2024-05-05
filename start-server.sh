@@ -31,4 +31,4 @@ echo "Files in current directory ($(pwd)):"
 ls
 
 # Run the GreeterServer with the specified classpath
-java -cp "$(pwd)/$class_directory" GreeterServer
+java -cp "$(pwd)/$class_directory" ServerNode

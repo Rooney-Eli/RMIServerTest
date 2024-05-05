@@ -4,35 +4,32 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class ServerNode {
-    private static ClientToServer server;
+    static HashMap<String, IServerToClient> subscriptions = new HashMap<>();
+
 
     public static void main(String[] args) {
-        server = setupServer();
-        if (server == null) return;
+        String myAddress = "192.168.1.206";
 
-        Timer timer = new Timer();
+        ArrayList<String> serverAddresses = new ArrayList<>();
+        serverAddresses.add("192.168.1.206"); //desktop
+        serverAddresses.add("192.168.1.254"); //laptop
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                notifySubscribers();
-            }
-        }, 0, 5000);
+        ClientToServer clientToServerStub = setupServer(subscriptions);
+        if (clientToServerStub == null) return;
+
+        serverAddresses.remove(myAddress);
+        ServerToServerConnectionHandler sts = new ServerToServerConnectionHandler(myAddress, serverAddresses, "STS");
+
 
     }
-    static int num = 0;
-    public static void notifySubscribers() {
-        server.notifySubscribersNewNumber(num++);
-    }
 
-    public static ClientToServer setupServer() {
+    public static ClientToServer setupServer(HashMap<String, IServerToClient> subscriptions) {
         ClientToServer server;
         try {
-            server = new ClientToServer();
+            server = new ClientToServer(subscriptions);
             UnicastRemoteObject.exportObject(server, 0);
         } catch (RemoteException e) {
             System.err.println("There was a problem exporting remote server object!");
@@ -41,7 +38,7 @@ public class ServerNode {
 
         try {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1",1099); // Local Registry for the Node
-            registry.rebind("Hello", server);
+            registry.rebind("CTS", server);
         } catch (RemoteException e) {
             System.err.println("There was a problem binding the server object in the registry!");
             return null;
@@ -54,6 +51,8 @@ public class ServerNode {
         }
         return server;
     }
+
+
 
 
 }
