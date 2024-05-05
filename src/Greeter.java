@@ -3,7 +3,7 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class Greeter implements Hello, Goodbye {
+public class Greeter implements Greet {
 
     public String sayHello(String name) throws RemoteException {
         return "Hello, " + name + "!";

@@ -19,8 +19,7 @@ public class GreeterServer {
 
         try {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1",1099); // Local Registry for the Node
-            registry.rebind("Hello", (Hello) server);
-            registry.rebind("Goodbye", (Goodbye) server);
+            registry.rebind("Hello", (Greet) server);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.err.println("There was a problem binding the server object in the registry!");
