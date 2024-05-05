@@ -1,7 +1,10 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface Greet extends Remote {
+public interface IClientToServer extends Remote {
+    void subscribeToServerNotifications(String address) throws RemoteException;
+
     String sayHello(String name) throws RemoteException;
+
     String sayGoodbye() throws RemoteException;
 }
