@@ -6,7 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class Greeter implements Greet {
 
     public String sayHello(String name) throws RemoteException {
-        return "Hello, " + name + "!";
+        return "Hello, from " + name + "!";
     }
 
     public String sayGoodbye() throws RemoteException {
